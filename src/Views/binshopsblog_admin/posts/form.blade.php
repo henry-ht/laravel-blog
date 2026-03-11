@@ -54,14 +54,14 @@
     <div class='col-sm-6 col-md-4'>
 
         <div class="form-group">
-            <label for="blog_posted_at">Posted at</label>
-            <input type="text" class="form-control" id="blog_posted_at" aria-describedby="blog_posted_at_help"
+            <label for="blog_posted_at">Posted at (UTC)</label>
+            <input type="datetime-local" class="form-control" id="blog_posted_at" aria-describedby="blog_posted_at_help"
                    name='posted_at'
                    value="{{old("posted_at",$post->posted_at ?? \Carbon\Carbon::now())}}">
             <small id="blog_posted_at_help" class="form-text text-muted">When this should be published. If this value is
                 greater
                 than now ({{\Carbon\Carbon::now()}}) then it will not (yet) appear on your blog. Should be in the <code>YYYY-MM-DD
-                    HH:MM:SS</code> format.
+                    HH:MM:SS</code> format. 
             </small>
         </div>
 

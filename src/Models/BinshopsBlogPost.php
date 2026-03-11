@@ -26,7 +26,8 @@ class BinshopsBlogPost extends Model implements SearchResultInterface
      */
     public $casts = [
         'is_published' => 'boolean',
-        'posted_at' => 'date'
+        'posted_at' => 'datetime',
+        'scheduled_at' => 'datetime',
     ];
 
     /**
@@ -40,7 +41,7 @@ class BinshopsBlogPost extends Model implements SearchResultInterface
      * @var array
      */
     public $fillable = [
-
+        'scheduled_at',
         'title',
         'subtitle',
         'short_description',

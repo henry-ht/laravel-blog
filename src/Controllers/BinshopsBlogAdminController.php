@@ -10,6 +10,7 @@ use BinshopsBlog\Events\BlogPostAdded;
 use BinshopsBlog\Events\BlogPostEdited;
 use BinshopsBlog\Events\BlogPostWillBeDeleted;
 use BinshopsBlog\Helpers;
+use BinshopsBlog\Jobs\PublishScheduledPostJob;
 use BinshopsBlog\Middleware\UserCanManageBlogPosts;
 use BinshopsBlog\Models\BinshopsBlogPost;
 use BinshopsBlog\Models\BinshopsBlogUploadedPhoto;
@@ -47,6 +48,7 @@ class BinshopsBlogAdminController extends Controller
      */
     public function index()
     {
+
         $posts = BinshopsBlogPost::orderBy("posted_at", "desc")
             ->paginate(10);
 
@@ -73,19 +75,30 @@ class BinshopsBlogAdminController extends Controller
     {
         $new_blog_post = new BinshopsBlogPost($request->all());
 
-        $this->processUploadedImages($request, $new_blog_post);
-
+        
         if (!$new_blog_post->posted_at) {
             $new_blog_post->posted_at = Carbon::now();
         }
-
+        
         $new_blog_post->user_id = \Auth::user()->id;
         $new_blog_post->save();
+
+        $this->processUploadedImages($request, $new_blog_post);
 
         $new_blog_post->categories()->sync($request->categories());
 
         Helpers::flash_message("Added post");
         event(new BlogPostAdded($new_blog_post));
+
+        if ($new_blog_post->posted_at && $new_blog_post->posted_at->isFuture()) {
+            $new_blog_post->is_published = 0;
+            $new_blog_post->scheduled_at = $new_blog_post->posted_at;
+            $new_blog_post->save();
+
+            PublishScheduledPostJob::dispatch($new_blog_post->id)
+                ->delay($new_blog_post->posted_at);
+
+        }
         return redirect($new_blog_post->edit_url());
     }
 
@@ -122,6 +135,12 @@ class BinshopsBlogAdminController extends Controller
 
         Helpers::flash_message("Updated post");
         event(new BlogPostEdited($post));
+
+        if ($post->posted_at && $post->posted_at->isPast()) {
+            $post->scheduled_at = null;
+            $post->save();
+
+        }
 
         return redirect($post->edit_url());
 
@@ -227,6 +246,7 @@ class BinshopsBlogAdminController extends Controller
                 'uploaded_images' => $uploaded_image_details,
             ]);
         }
+        $new_blog_post->save();
     }
 
     /**

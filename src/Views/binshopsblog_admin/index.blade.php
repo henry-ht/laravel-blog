@@ -52,6 +52,16 @@
                         @endif
 
                     </dd>
+                    @if(!empty($post->scheduled_at))
+                    <dt class="">Scheduled in </dt>
+                    <dd class="">
+                        <span class="text-danger">
+                            {{$post->scheduled_at->diffForHumans()}}
+                        </span>
+                    </dd>
+                    @endIf
+
+                    
                 </dl>
 
 

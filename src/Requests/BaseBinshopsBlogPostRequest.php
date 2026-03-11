@@ -19,7 +19,7 @@ abstract class BaseBinshopsBlogPostRequest extends BaseRequest
         $check_valid_posted_at = function ($attribute, $value, $fail) {
             // just the 'date' validation can cause errors ("2018-01-01 a" passes the validation, but causes a carbon error).
             try {
-                Carbon::createFromFormat('Y-m-d H:i:s', $value);
+                Carbon::createFromFormat('Y-m-d\TH:i:s', $value);
             } catch (\Exception $e) {
                 // return $fail if Carbon could not successfully create a date from $value
                 return $fail('Posted at is not a valid date');
@@ -39,7 +39,6 @@ abstract class BaseBinshopsBlogPostRequest extends BaseRequest
                 return $fail("The use of custom view files is not enabled for this site, so you cannot submit a value for it");
             }
         };
-
 
         // generate the main set of rules:
         $return = [

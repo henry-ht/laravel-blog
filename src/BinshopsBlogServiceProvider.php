@@ -31,7 +31,8 @@ class BinshopsBlogServiceProvider extends ServiceProvider
                      '2018_09_16_224023_add_author_and_url_binshops_blog_posts_table.php',
                      '2018_09_26_085711_add_short_desc_textrea_to_binshops_blog.php',
                      '2018_09_27_122627_create_binshops_blog_uploaded_photos_table.php',
-                     '2020_05_27_104123_add_parameters_binshops_blog_categories_table.php'
+                     '2020_05_27_104123_add_parameters_binshops_blog_categories_table.php',
+                     '2026_03_11_171559_add_scheduled_at_to_binshops_blog_posts_table.php',
                  ] as $file) {
 
             $this->publishes([
