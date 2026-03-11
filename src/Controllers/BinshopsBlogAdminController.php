@@ -79,6 +79,11 @@ class BinshopsBlogAdminController extends Controller
         if (!$new_blog_post->posted_at) {
             $new_blog_post->posted_at = Carbon::now();
         }
+
+        if (isset($new_blog_post->posted_at) && $new_blog_post->posted_at->isFuture()) {
+            $new_blog_post->is_published = 0;
+            $new_blog_post->scheduled_at = $new_blog_post->posted_at;
+        }
         
         $new_blog_post->user_id = \Auth::user()->id;
         $new_blog_post->save();
@@ -91,10 +96,6 @@ class BinshopsBlogAdminController extends Controller
         event(new BlogPostAdded($new_blog_post));
 
         if ($new_blog_post->posted_at && $new_blog_post->posted_at->isFuture()) {
-            $new_blog_post->is_published = 0;
-            $new_blog_post->scheduled_at = $new_blog_post->posted_at;
-            $new_blog_post->save();
-
             PublishScheduledPostJob::dispatch($new_blog_post)
                 ->delay($new_blog_post->posted_at);
 
