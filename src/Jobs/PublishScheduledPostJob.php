@@ -8,13 +8,18 @@ use Illuminate\Contracts\Queue\ShouldBeUniqueUntilProcessing;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use BinshopsBlog\Models\BinshopsBlogPost;
+use Illuminate\Support\Facades\DB;
 
 class PublishScheduledPostJob implements ShouldQueue, ShouldBeUniqueUntilProcessing
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $postId;
+
+    /**
+     * Tiempo de bloqueo del job único
+     */
+    public $uniqueFor = 86400; // 24 horas
 
     public function __construct($postId)
     {
@@ -29,26 +34,27 @@ class PublishScheduledPostJob implements ShouldQueue, ShouldBeUniqueUntilProcess
         return 'publish_post_'.$this->postId;
     }
 
-    /**
-     * Tiempo de bloqueo del job único
-     */
-    public $uniqueFor = 86400; // 24 horas
-
     public function handle()
     {
-        
-        $post = BinshopsBlogPost::find($this->postId);
+        // Verifica que el post exista en la DB directamente
+        $post = DB::table('binshops_blog_posts')->where('id', $this->postId)->first();
 
         if (!$post) {
+            \Log::warning("Post {$this->postId} not found in DB!");
             return;
         }
 
-        if ($post->scheduled_at == null) {
+        if ($post->scheduled_at === null) {
+            \Log::info("Post {$this->postId} has no scheduled date, skipping.");
             return;
         }
 
-        $post->is_published = true;
-        $post->scheduled_at = null;
-        $post->save();
+        // Actualiza directamente la DB sin usar Eloquent
+        DB::table('binshops_blog_posts')->where('id', $this->postId)->update([
+            'is_published' => true,
+            'scheduled_at' => null,
+        ]);
+
+        \Log::info("Post {$this->postId} published successfully via DB.");
     }
 }

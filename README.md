@@ -18,7 +18,7 @@ Incredible features with a lightweight laravel blog package.
 ### Quick and easy installation (Multi-lang version)
 1- Install via composer
 
-`composer require binshops/laravel-blog`
+`composer require henry-ht/laravel-blog`
 
 For a fresh Laravel installation run the following too:
 
