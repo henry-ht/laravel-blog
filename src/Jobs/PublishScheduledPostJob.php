@@ -8,22 +8,16 @@ use Illuminate\Contracts\Queue\ShouldBeUniqueUntilProcessing;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\DB;
+use BinshopsBlog\Models\BinshopsBlogPost;
 
 class PublishScheduledPostJob implements ShouldQueue, ShouldBeUniqueUntilProcessing
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $postId;
 
-    /**
-     * Tiempo de bloqueo del job único
-     */
-    public $uniqueFor = 86400; // 24 horas
-
-    public function __construct($postId)
+    public function __construct(private BinshopsBlogPost $post)
     {
-        $this->postId = $postId;
+
     }
 
     /**
@@ -31,30 +25,27 @@ class PublishScheduledPostJob implements ShouldQueue, ShouldBeUniqueUntilProcess
      */
     public function uniqueId(): string
     {
-        return 'publish_post_'.$this->postId;
+        return 'publish_post_'.$this->post->id;
     }
+
+    /**
+     * Tiempo de bloqueo del job único
+     */
+    public $uniqueFor = 86400; // 24 horas
 
     public function handle()
     {
-        // Verifica que el post exista en la DB directamente
-        $post = DB::table('binshops_blog_posts')->where('id', $this->postId)->first();
 
-        if (!$post) {
-            \Log::warning("Post {$this->postId} not found in DB!");
+        if (!$this->post) {
             return;
         }
 
-        if ($post->scheduled_at === null) {
-            \Log::info("Post {$this->postId} has no scheduled date, skipping.");
+        if ($this->post->scheduled_at == null) {
             return;
         }
 
-        // Actualiza directamente la DB sin usar Eloquent
-        DB::table('binshops_blog_posts')->where('id', $this->postId)->update([
-            'is_published' => true,
-            'scheduled_at' => null,
-        ]);
-
-        \Log::info("Post {$this->postId} published successfully via DB.");
+        $this->post->is_published = true;
+        $this->post->scheduled_at = null;
+        $this->post->save();
     }
 }

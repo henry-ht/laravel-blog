@@ -95,7 +95,7 @@ class BinshopsBlogAdminController extends Controller
             $new_blog_post->scheduled_at = $new_blog_post->posted_at;
             $new_blog_post->save();
 
-            PublishScheduledPostJob::dispatch($new_blog_post->id)
+            PublishScheduledPostJob::dispatch($new_blog_post)
                 ->delay($new_blog_post->posted_at);
 
         }
