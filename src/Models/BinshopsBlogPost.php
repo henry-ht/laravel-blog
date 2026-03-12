@@ -7,12 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 use Swis\Laravel\Fulltext\Indexable;
 use BinshopsBlog\Interfaces\SearchResultInterface;
 use BinshopsBlog\Scopes\BinshopsBlogPublishedScope;
+use Spatie\Feed\Feedable;
+use Spatie\Feed\FeedItem;
+use Illuminate\Support\Str;
 
 /**
  * Class BinshopsBlogPost
  * @package BinshopsBlog\Models
  */
-class BinshopsBlogPost extends Model implements SearchResultInterface
+class BinshopsBlogPost extends Model implements SearchResultInterface, Feedable
 {
 
     use Sluggable;
@@ -77,6 +80,26 @@ class BinshopsBlogPost extends Model implements SearchResultInterface
     public function search_result_page_title()
     {
         return $this->title;
+    }
+
+    
+    public function toFeedItem(): FeedItem
+    {
+        return FeedItem::create()
+            ->id($this->id)
+            ->title($this->title)
+            ->summary($this->short_description ?? Str::words(strip_tags($this->post_body), 30))
+            ->updated($this->updated_at)
+            ->link($this->url())
+            ->authorName($this->author->name)
+            ->authorEmail($this->author->email);
+    }
+
+    public static function getFeedItems()
+    {
+        return BinshopsBlogPost::where("is_published", true)
+            ->orderBy("posted_at", "desc")
+            ->limit(config("binshopsblog.rssfeed.posts_to_show_in_rss_feed", 10))->get();
     }
 
     /**

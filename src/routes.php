@@ -1,5 +1,6 @@
 <?php
 
+
 Route::group(['middleware' => ['web'], 'namespace' => '\BinshopsBlog\Controllers'], function () {
 
     /** The main public facing blog routes - show all posts, view a category, rss feed, view a single post, also the add comment route */
@@ -11,8 +12,10 @@ Route::group(['middleware' => ['web'], 'namespace' => '\BinshopsBlog\Controllers
         Route::get('/search', 'BinshopsBlogReaderController@search')
             ->name('binshopsblog.search');
 
-        Route::get('/feed', 'BinshopsBlogRssFeedController@feed')
-            ->name('binshopsblog.feed'); //RSS feed
+        // Route::get('/feed', 'BinshopsBlogRssFeedController@feed')
+        //     ->name('binshopsblog.feed'); //RSS feed
+
+        Route::feeds();
 
         Route::get('/category{subcategories}', 'BinshopsBlogReaderController@view_category')->where('subcategories', '^[a-zA-Z0-9-_\/]+$')->name('binshopsblog.view_category');
 
