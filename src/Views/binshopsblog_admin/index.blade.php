@@ -14,7 +14,7 @@
         <div class="col-md-6">
         
         <a href='{{ route('binshopsblog.admin.create_post_lang', $post->id) }}'
-                   class='btn btn-outline-success btn-sm mb-3 float-right '>
+                   class='btn btn-outline-success mb-3 float-right '>
             <i  class="fa fa-plus fa-fw" aria-hidden="true"></i>
                 Add Translation Post
         </a>
