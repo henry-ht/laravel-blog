@@ -124,10 +124,10 @@
                 @endif
 
 
-                <a href="{{$post->url()}}" class="card-link btn btn-outline-secondary"><i class="fa fa-file-text-o"
+                <a href="{{$post->url()}}" target="_blank" class="card-link btn btn-outline-secondary"><i class="fa fa-file-text-o"
                                                                                           aria-hidden="true"></i>
                     View Post</a>
-                <a href="{{$post->edit_url()}}" class="card-link btn btn-primary">
+                <a href="{{$post->edit_url()}}" class="card-link btn btn-primary" >
                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                     Edit Post</a>
 

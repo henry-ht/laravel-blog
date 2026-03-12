@@ -9,6 +9,10 @@
         @csrf
         @include("binshopsblog_admin::posts.form", ['post' => new \BinshopsBlog\Models\BinshopsBlogPost()])
 
+        @if(isset($parent_id))
+        <input type="hidden" name="parent_id" value="{{$parent_id}}">
+        @endIf
+
         <input type='submit' class='btn btn-primary' value='Add new post' >
 
     </form>

@@ -88,6 +88,21 @@ class BinshopsBlogAdminController extends Controller
         ]);
     }
 
+    
+
+    /**
+     * Show form for creating new post  lang
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function create_post_lang($postId)
+    {
+        $languages = BinshopsLanguage::whereIn("code", config("binshopsblog.langs", ["EN", "ES"]) )->get();
+        return view("binshopsblog_admin::posts.add_post", [
+            "languages" => $languages,
+            "parent_id" => $postId
+        ]);
+    }
+
     /**
      * Save a new post
      *

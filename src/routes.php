@@ -2,6 +2,15 @@
 
 
 Route::group(['middleware' => ['web'], 'namespace' => '\BinshopsBlog\Controllers'], function () {
+    Route::get('/{languageCode}/blog/{blogPostSlug}',
+            'BinshopsBlogReaderController@viewSinglePostLang')
+            ->name('binshopsblog.single.language');
+
+    Route::get('/{languageCode}/blog', 'BinshopsBlogReaderController@indexLang')
+            ->name('binshopsblog.index.lang');
+
+    Route::get('/{languageCode}/blog/buscar', 'BinshopsBlogReaderController@searchLang')
+            ->name('binshopsblog.search.lang');
 
     /** The main public facing blog routes - show all posts, view a category, rss feed, view a single post, also the add comment route */
     Route::group(['prefix' => config('binshopsblog.blog_prefix', 'blog')], function () {
@@ -27,10 +36,6 @@ Route::group(['middleware' => ['web'], 'namespace' => '\BinshopsBlog\Controllers
             'BinshopsBlogReaderController@viewSinglePost')
             ->name('binshopsblog.single');
 
-        Route::get('/{languageCode}/{blogPostSlug}',
-            'BinshopsBlogReaderController@viewSinglePost')
-            ->name('binshopsblog.single.language');
-
         // throttle to a max of 10 attempts in 3 minutes:
         Route::group(['middleware' => 'throttle:10,3'], function () {
 
@@ -53,12 +58,9 @@ Route::group(['middleware' => ['web'], 'namespace' => '\BinshopsBlog\Controllers
         Route::get('/{postId}/translations', 'BinshopsBlogAdminController@indexLang')
             ->name('binshopsblog.admin.indexLang');
 
-        Route::get('/{postId}/translations/add_post', 'BinshopsBlogAdminController@create_post')
+        Route::get('/{postId}/translations/add_post', 'BinshopsBlogAdminController@create_post_lang')
             ->name('binshopsblog.admin.create_post_lang');
 
-        Route::get('/{postId}/translations/edit_post/{blogPostId}',
-            'BinshopsBlogAdminController@edit_post')
-            ->name('binshopsblog.admin.edit_post_lang');
 
 
         Route::get('/add_post',
