@@ -19,6 +19,7 @@ use BinshopsBlog\Requests\DeleteBinshopsBlogPostRequest;
 use BinshopsBlog\Requests\UpdateBinshopsBlogPostRequest;
 use BinshopsBlog\Traits\UploadFileTrait;
 use Swis\Laravel\Fulltext\Search;
+use Illuminate\Support\Facades\Queue;
 
 /**
  * Class BinshopsBlogAdminController
@@ -129,17 +130,23 @@ class BinshopsBlogAdminController extends Controller
         $post = BinshopsBlogPost::findOrFail($blogPostId);
         $post->fill($request->all());
 
-        $this->processUploadedImages($request, $post);
-
         $post->save();
+
+        $this->processUploadedImages($request, $post);
         $post->categories()->sync($request->categories());
 
         Helpers::flash_message("Updated post");
         event(new BlogPostEdited($post));
 
+        if ($post->posted_at && $post->posted_at->isFuture() && $post->wasChanged('posted_at')) {
+            Queue::delete('publish_post_'.$post->id);
+            PublishScheduledPostJob::dispatch($post)
+                ->delay($post->posted_at);
+
+        }
+
         if ($post->posted_at && $post->posted_at->isPast()) {
             $post->scheduled_at = null;
-            $post->save();
 
         }
 

@@ -44,6 +44,10 @@ class PublishScheduledPostJob implements ShouldQueue, ShouldBeUniqueUntilProcess
             return;
         }
 
+        if (isset($this->post->scheduled_at) && $this->post->scheduled_at->isFuture()) {
+            return;
+        }
+
         $this->post->is_published = true;
         $this->post->scheduled_at = null;
         $this->post->save();

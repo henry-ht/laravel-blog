@@ -42,7 +42,7 @@ abstract class BaseBinshopsBlogPostRequest extends BaseRequest
 
         // generate the main set of rules:
         $return = [
-            'posted_at' => ['nullable', $check_valid_posted_at],
+            'posted_at' => ['nullable', "date"],
             'title' => ['required', 'string', 'min:1', 'max:255'],
             'subtitle' => ['nullable', 'string', 'min:1', 'max:255'],
             'post_body' => ['required_without:use_view_file', 'max:2000000'], //medium text
