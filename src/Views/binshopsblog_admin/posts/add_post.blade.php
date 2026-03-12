@@ -3,7 +3,7 @@
 
 
     <h5>Admin - Add post</h5>
-
+    
     <form method='post' action='{{route("binshopsblog.admin.store_post")}}'  enctype="multipart/form-data" >
 
         @csrf

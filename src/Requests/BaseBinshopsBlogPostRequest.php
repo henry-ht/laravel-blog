@@ -3,6 +3,8 @@
 namespace BinshopsBlog\Requests;
 
 use Carbon\Carbon;
+use Illuminate\Validation\Rule;
+use BinshopsBlog\Models\BinshopsLanguage;
 
 abstract class BaseBinshopsBlogPostRequest extends BaseRequest
 {
@@ -42,6 +44,7 @@ abstract class BaseBinshopsBlogPostRequest extends BaseRequest
 
         // generate the main set of rules:
         $return = [
+            'language_id' => ['nullable', 'integer', Rule::exists(BinshopsLanguage::class, 'id')->whereIn('code', config("binshopsblog.langs", ["EN", "ES"]))],
             'posted_at' => ['nullable', "date"],
             'title' => ['required', 'string', 'min:1', 'max:255'],
             'subtitle' => ['nullable', 'string', 'min:1', 'max:255'],

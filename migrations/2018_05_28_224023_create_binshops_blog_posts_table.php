@@ -16,6 +16,7 @@ class CreateBinshopsBlogPostsTable extends Migration
         Schema::create('binshops_blog_posts', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger("user_id")->index()->nullable();
+            
             $table->string("slug")->unique();
 
             $table->string("title")->nullable()->default("New blog post");

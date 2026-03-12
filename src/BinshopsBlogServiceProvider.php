@@ -33,10 +33,22 @@ class BinshopsBlogServiceProvider extends ServiceProvider
                      '2018_09_27_122627_create_binshops_blog_uploaded_photos_table.php',
                      '2020_05_27_104123_add_parameters_binshops_blog_categories_table.php',
                      '2026_03_11_171559_add_scheduled_at_to_binshops_blog_posts_table.php',
+                     '2026_03_12_171559_create_binshops_languages_table.php',
+                     '2026_03_12_171579_add_language_and_parent_to_binshops_blog_posts_table.php',
                  ] as $file) {
 
             $this->publishes([
                 __DIR__ . '/../migrations/' . $file => database_path('migrations/' . $file)
+            ]);
+
+        }
+
+        foreach ([
+                     'BinshopsLanguageSeeder.php',
+                 ] as $file) {
+
+            $this->publishes([
+                __DIR__ . '/../seeders/' . $file => database_path('seeders/' . $file)
             ]);
 
         }

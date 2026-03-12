@@ -3,6 +3,7 @@
 namespace BinshopsBlog\Controllers;
 
 use App\Http\Controllers\Controller;
+use BinshopsBlog\Models\BinshopsLanguage;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use BinshopsBlog\Interfaces\BaseRequestInterface;
@@ -50,10 +51,29 @@ class BinshopsBlogAdminController extends Controller
     public function index()
     {
 
-        $posts = BinshopsBlogPost::orderBy("posted_at", "desc")
+        $posts = BinshopsBlogPost::orderBy("posted_at", "desc")->whereNull("parent_id")
             ->paginate(10);
 
         return view("binshopsblog_admin::index", ['posts'=>$posts]);
+    }
+
+
+    /**
+     * View all posts
+     *
+     * @return mixed
+     */
+    public function indexLang($postId)
+    {
+        
+        $post = BinshopsBlogPost::findOrFail($postId);
+        $posts = BinshopsBlogPost::orderBy("posted_at", "desc")->where("parent_id", $postId)
+            ->paginate(10);
+
+        return view("binshopsblog_admin::index", [
+            'posts'=>$posts
+            , 'post' => $post
+        ]);
     }
 
     /**
@@ -62,7 +82,10 @@ class BinshopsBlogAdminController extends Controller
      */
     public function create_post()
     {
-        return view("binshopsblog_admin::posts.add_post");
+        $languages = BinshopsLanguage::whereIn("code", config("binshopsblog.langs", ["EN", "ES"]) )->get();
+        return view("binshopsblog_admin::posts.add_post", [
+            "languages" => $languages
+        ]);
     }
 
     /**
@@ -112,8 +135,11 @@ class BinshopsBlogAdminController extends Controller
      */
     public function edit_post( $blogPostId)
     {
+        $languages = BinshopsLanguage::whereIn("code", config("binshopsblog.langs", ["EN", "ES"]) )->get();
         $post = BinshopsBlogPost::findOrFail($blogPostId);
-        return view("binshopsblog_admin::posts.edit_post")->withPost($post);
+        return view("binshopsblog_admin::posts.edit_post", [
+            "languages" => $languages
+        ])->withPost($post);
     }
 
     /**

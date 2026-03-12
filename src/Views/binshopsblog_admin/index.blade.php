@@ -1,6 +1,30 @@
 @extends("binshopsblog_admin::layouts.admin_layout")
 @section("content")
 
+    @if(isset($post) && request()->routeIs('binshopsblog.admin.indexLang'))
+
+    <div class="row">
+        <div class="col-md-6">
+            Translation by 
+                <h3>
+                    {{ $post->title }}
+                </h3>
+
+        </div>
+        <div class="col-md-6">
+        
+        <a href='{{ route('binshopsblog.admin.create_post_lang', $post->id) }}'
+                   class='btn btn-outline-success btn-sm mb-3 float-right '>
+            <i  class="fa fa-plus fa-fw" aria-hidden="true"></i>
+                Add Translation Post
+        </a>
+
+        </div>
+    </div>
+    @endif
+
+
+
     @if(count($posts) > 0)
         <div class='search-form-outer mb-3'>
             <form method='get' action='{{route("binshopsblog.admin.searchblog", app('request')->get('locale'))}}' class='text-center'>
@@ -52,6 +76,12 @@
                         @endif
 
                     </dd>
+                    @if(!empty($post->language_id))
+                    <dt class="">language</dt>
+                    <dd class="">
+                        {{__($post->language->name)}} | {{$post->language->code}}
+                    </dd>
+                    @endIf
                     @if(!empty($post->scheduled_at))
                     <dt class="">Scheduled in </dt>
                     <dd class="">
@@ -100,6 +130,14 @@
                 <a href="{{$post->edit_url()}}" class="card-link btn btn-primary">
                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                     Edit Post</a>
+
+                @if(!request()->routeIs('binshopsblog.admin.indexLang'))
+                <a href="{{route("binshopsblog.admin.indexLang", $post->id)}}" class="card-link btn btn-secondary">
+                    <i class="fa fa-language" aria-hidden="true"></i>
+                    Translations
+                </a>
+                @endIf
+
                 <form onsubmit="return confirm('Are you sure you want to delete this blog post?\n You cannot undo this action!');"
                       method='post' action='{{route("binshopsblog.admin.destroy_post", $post->id)}}' class='float-right'>
                     @csrf

@@ -93,6 +93,12 @@ Default Front URI: `/blog`
 
 To see package on Packagist click this [Link](https://packagist.org/packages/binshops/laravel-blog)
 
+### Multi Language Version (New)
+
+To install the multi language version of the package use version v
+
+1- php artisan db:seed --class=BinshopsLanguageSeeder
+
 ### Multi Language Version (Old)
 To install the single language version of the package use version v8.1x:
 

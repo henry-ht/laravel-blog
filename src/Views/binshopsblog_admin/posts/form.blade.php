@@ -51,6 +51,29 @@
         </div>
 
     </div>
+
+    
+    <div class='col-sm-6 col-md-4'>
+
+
+        <div class="form-group">
+            <label for="blog_language_id">Language (optional)</label>
+
+            <select name='language_id' class='form-control' id='blog_language_id'
+                    aria-describedby='language_id'>
+                <option value="">-- Select a language --</option> <!-- valor vacío -->
+                @foreach($languages as $language)
+                    <option @if(old("language_id") == $language->id) selected='selected' @endif value="{{$language->id}}">
+                        {{__($language->name)}} | {{$language->code}}
+                    </option>
+                @endforeach
+
+
+            </select>
+        </div>
+
+    </div>
+
     <div class='col-sm-6 col-md-4'>
 
         <div class="form-group">

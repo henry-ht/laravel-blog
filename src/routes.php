@@ -27,6 +27,10 @@ Route::group(['middleware' => ['web'], 'namespace' => '\BinshopsBlog\Controllers
             'BinshopsBlogReaderController@viewSinglePost')
             ->name('binshopsblog.single');
 
+        Route::get('/{languageCode}/{blogPostSlug}',
+            'BinshopsBlogReaderController@viewSinglePost')
+            ->name('binshopsblog.single.language');
+
         // throttle to a max of 10 attempts in 3 minutes:
         Route::group(['middleware' => 'throttle:10,3'], function () {
 
@@ -45,6 +49,17 @@ Route::group(['middleware' => ['web'], 'namespace' => '\BinshopsBlog\Controllers
 
         Route::get('/', 'BinshopsBlogAdminController@index')
             ->name('binshopsblog.admin.index');
+
+        Route::get('/{postId}/translations', 'BinshopsBlogAdminController@indexLang')
+            ->name('binshopsblog.admin.indexLang');
+
+        Route::get('/{postId}/translations/add_post', 'BinshopsBlogAdminController@create_post')
+            ->name('binshopsblog.admin.create_post_lang');
+
+        Route::get('/{postId}/translations/edit_post/{blogPostId}',
+            'BinshopsBlogAdminController@edit_post')
+            ->name('binshopsblog.admin.edit_post_lang');
+
 
         Route::get('/add_post',
             'BinshopsBlogAdminController@create_post')

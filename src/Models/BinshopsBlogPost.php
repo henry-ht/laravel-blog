@@ -53,7 +53,8 @@ class BinshopsBlogPost extends Model implements SearchResultInterface, Feedable
         'meta_desc',
         'slug',
         'use_view_file',
-
+        'parent_id',
+        'language_id',
         'is_published',
         'posted_at',
     ];
@@ -117,6 +118,16 @@ class BinshopsBlogPost extends Model implements SearchResultInterface, Feedable
         static::addGlobalScope(new BinshopsBlogPublishedScope());
     }
 
+    public function blogPost()
+    {
+        return $this->hasMany(BinshopsBlogPost::class, 'parent_id');
+    }
+
+    public function childs()
+    {
+        return $this->blogPost()->with('childs');
+    }
+
     /**
      * The associated author (if user_id) is set
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -158,6 +169,10 @@ class BinshopsBlogPost extends Model implements SearchResultInterface, Feedable
     {
         return $this->hasMany(BinshopsBlogComment::class);
     }
+    
+    public function language(){
+        return $this->belongsTo(BinshopsLanguage::class);
+    }
 
     /**
      * Returns the public facing URL to view this blog post
@@ -166,6 +181,15 @@ class BinshopsBlogPost extends Model implements SearchResultInterface, Feedable
      */
     public function url()
     {
+        if(empty($this->language_id)){
+            return route("binshopsblog.single", $this->slug);
+        }else if(!empty($this->language_id)){
+            return route("binshopsblog.single.language", [
+                    "languageCode" => strtolower($this->language->code), 
+                    "blogPostSlug" => $this->slug
+                ]);
+        }
+
         return route("binshopsblog.single", $this->slug);
     }
 
