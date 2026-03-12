@@ -43,6 +43,7 @@ class BinshopsBlogServiceProvider extends ServiceProvider
 
         $this->publishes([
             __DIR__ . '/Views/binshopsblog' => base_path('resources/views/vendor/binshopsblog'),
+            __DIR__ . '/Views/feed' => base_path('public/vendor/feed'),
             __DIR__ . '/Config/binshopsblog.php' => config_path('binshopsblog.php'),
             __DIR__ . '/Config/feed.php' => config_path('feed.php'),
             __DIR__ . '/css/binshopsblog_admin.css' => public_path('binshopsblog_admin.css'),
