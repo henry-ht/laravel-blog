@@ -44,7 +44,11 @@ npm install && npm run build
 
 `php artisan migrate;`
 
-5- You must add one method to your \App\User (in laravel 8 \App\Models\User) model. As the name of this method shows it determines which user can manage posts. Place your logic there
+5- execute seeders
+
+`php artisan db:seed --class=BinshopsLanguageSeeder`
+
+6- You must add one method to your \App\User (in laravel 8 \App\Models\User) model. As the name of this method shows it determines which user can manage posts. Place your logic there
 
 ```
  /**
@@ -77,9 +81,9 @@ npm install && npm run build
     }
 ```
 
-6- Create a directory in `public/` named `blog_images`
+7- Create a directory in `public/` named `blog_images`
 
-7- Start the server
+8- Start the server
 
 ```
 php artisan serve
@@ -93,11 +97,6 @@ Default Front URI: `/blog`
 
 To see package on Packagist click this [Link](https://packagist.org/packages/binshops/laravel-blog)
 
-### Multi Language Version (New)
-
-To install the multi language version of the package use version v
-
-1- php artisan db:seed --class=BinshopsLanguageSeeder
 
 ### Multi Language Version (Old)
 To install the single language version of the package use version v8.1x:
