@@ -63,7 +63,7 @@
                     aria-describedby='language_id'>
                 <option value="">-- Select a language --</option> <!-- valor vacío -->
                 @foreach($languages as $language)
-                    <option @if(old("language_id") == $language->id || $post->language->id == $language->id) selected='selected' @endif value="{{$language->id}}">
+                    <option @if(old("language_id") == $language->id || ($post->language->id ?? 0) == $language->id) selected='selected' @endif value="{{$language->id}}">
                         {{__($language->name)}} | {{$language->code}}
                     </option>
                 @endforeach
