@@ -9,6 +9,7 @@ use Swis\Laravel\Fulltext\Search;
 use BinshopsBlog\Captcha\UsesCaptcha;
 use BinshopsBlog\Models\BinshopsBlogCategory;
 use BinshopsBlog\Models\BinshopsBlogPost;
+use Illuminate\Support\Facades\App;
 
 /**
  * Class BinshopsBlogReaderController
@@ -77,6 +78,15 @@ class BinshopsBlogReaderController extends Controller
     {
         // the published_at + is_published are handled by BinshopsBlogPublishedScope, and don't take effect if the logged in user can manageb log posts
         $title = 'Blog Page'; // default title...
+
+        if (!in_array(strtoupper($languageCode), config("binshopsblog.langs", ["EN", "ES"]))) {
+            abort(404);
+        }
+        
+        App::setLocale($languageCode);
+        config([
+            'app.locale'    => $languageCode
+        ]);
 
         $categoryChain = null;
         if ($category_slug) {
@@ -155,6 +165,17 @@ class BinshopsBlogReaderController extends Controller
         if (!config("binshopsblog.search.search_enabled")) {
             throw new \Exception("Search is disabled");
         }
+        
+
+        if (!in_array(strtoupper($languageCode), config("binshopsblog.langs", ["EN", "ES"]))) {
+            abort(404);
+        }
+        
+        App::setLocale($languageCode);
+        config([
+            'app.locale'    => $languageCode
+        ]);
+
         $query = $request->get("s");
         $search = new Search();
         $search_results = $search->run($query);
@@ -230,6 +251,16 @@ class BinshopsBlogReaderController extends Controller
      */
     public function viewSinglePostLang(Request $request, $languageCode, $blogPostSlug)
     {
+
+        if (!in_array(strtoupper($languageCode), config("binshopsblog.langs", ["EN", "ES"]))) {
+            abort(404);
+        }
+        
+        App::setLocale($languageCode);
+        config([
+            'app.locale'    => $languageCode
+        ]);
+
         // the published_at + is_published are handled by BinshopsBlogPublishedScope, and don't take effect if the logged in user can manage log posts
         $blog_post = BinshopsBlogPost::where("slug", $blogPostSlug)
             ->firstOrFail();
