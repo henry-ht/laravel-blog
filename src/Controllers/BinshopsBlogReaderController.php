@@ -45,7 +45,7 @@ class BinshopsBlogReaderController extends Controller
             $posts = BinshopsBlogPost::query();
         }
 
-        $posts = $posts->where('is_published', '=', 1)->where('posted_at', '<', Carbon::now()->format('Y-m-d H:i:s'))->orderBy("posted_at", "desc")->paginate(config("binshopsblog.per_page", 10));
+        $posts = $posts->whereNull("language_id")->where('is_published', '=', 1)->where('posted_at', '<', Carbon::now()->format('Y-m-d H:i:s'))->orderBy("posted_at", "desc")->paginate(config("binshopsblog.per_page", 10));
 
         //load categories in 3 levels
         $rootList = BinshopsBlogCategory::where('parent_id' ,'=' , null)->get();
