@@ -198,8 +198,12 @@ class BinshopsBlogReaderController extends Controller
     public function viewSinglePost(Request $request, $blogPostSlug)
     {
         // the published_at + is_published are handled by BinshopsBlogPublishedScope, and don't take effect if the logged in user can manage log posts
-        $blog_post = BinshopsBlogPost::where("slug", $blogPostSlug)
-            ->firstOrFail();
+        $blog_post = BinshopsBlogPost::whereNull("language_id")->where("slug", $blogPostSlug)
+            ->first();
+
+        if (!$blog_post) {
+            abort(404);
+        }
 
         if ($captcha = $this->getCaptchaObject()) {
             $captcha->runCaptchaBeforeShowingPosts($request, $blog_post);
